@@ -1,11 +1,11 @@
 <?php
 /**
- * Create WordPress Plugin Tests: Example Unit Test
+ * WordPress Environment Switcher Tests: Example Unit Test
  *
- * @package create-wordpress-plugin
+ * @package wp-environment-switcher
  */
 
-namespace Create_WordPress_Plugin\Tests\Unit;
+namespace Alley\WP\WordPress_Environment_Switcher\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
