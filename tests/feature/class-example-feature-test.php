@@ -1,13 +1,13 @@
 <?php
 /**
- * Create WordPress Plugin Tests: Example Feature Test
+ * WordPress Environment Switcher Tests: Example Feature Test
  *
- * @package create-wordpress-plugin
+ * @package wp-environment-switcher
  */
 
-namespace Create_WordPress_Plugin\Tests\Feature;
+namespace Alley\WP\WordPress_Environment_Switcher\Tests\Feature;
 
-use Create_WordPress_Plugin\Tests\Test_Case;
+use Alley\WP\WordPress_Environment_Switcher\Tests\Test_Case;
 
 /**
  * A test suite for an example feature.
