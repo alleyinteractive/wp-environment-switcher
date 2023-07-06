@@ -6,9 +6,6 @@ parameters:
 	level: max
 
 	paths:
-		- blocks/
-		- entries/
-		- src/
 		- wp-environment-switcher.php
 
 #    ignoreErrors:

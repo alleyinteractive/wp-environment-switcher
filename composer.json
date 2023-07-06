@@ -11,16 +11,14 @@
     "authors": [
         {
             "name": "Sean Fisher",
-            "email": "srtfisher@gmail.com"
+            "email": "sean@alley.com"
         }
     ],
     "require": {
-        "php": "^8.0",
-        "alleyinteractive/composer-wordpress-autoloader": "^1.0"
+        "php": "^8.0"
     },
     "require-dev": {
         "alleyinteractive/alley-coding-standards": "^1.0",
-        "mantle-framework/testkit": "^0.11",
         "szepeviktor/phpstan-wordpress": "^1.1"
     },
     "config": {
@@ -31,27 +29,15 @@
         },
         "sort-packages": true
     },
-    "extra": {
-        "wordpress-autoloader": {
-            "autoload": {
-                "Alley\\WP\\WordPress_Environment_Switcher": "src"
-            },
-            "autoload-dev": {
-                "Alley\\WP\\WordPress_Environment_Switcher\\Tests": "tests"
-            }
-        }
-    },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
         "phpcbf": "phpcbf .",
         "phpcs": "phpcs .",
-        "phpunit": "phpunit",
         "phpstan": "phpstan --memory-limit=512M",
         "test": [
             "@phpcs",
-            "@phpstan",
-            "@phpunit"
+            "@phpstan"
         ]
     }
 }
