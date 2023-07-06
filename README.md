@@ -38,7 +38,7 @@ the switcher.
 
 ## Testing
 
-Run `composer test` to run tests against PHPUnit and the PHP code in the plugin.
+Run `composer test` to run tests against PHPStan/PHPCS.
 
 ## Changelog
 
@@ -48,7 +48,7 @@ Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed re
 
 This project is actively maintained by [Alley
 Interactive](https://github.com/alleyinteractive). Like what you see? [Come work
-with us](https://alley.co/careers/).
+with us](https://alley.com/careers/).
 
 - [Sean Fisher](https://github.com/srtfisher)
 - [All Contributors](../../contributors)
