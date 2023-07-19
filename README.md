@@ -20,7 +20,21 @@ Activate the plugin in WordPress and you will see the switcher appear in the top
 
 ![Screenshot of plugin](https://github.com/alleyinteractive/wp-environment-switcher/assets/346399/83684c99-4f74-4969-b302-a0c617c17190)
 
-The plugin reads the current WordPress environment from `wp_get_environment_type()` which can be set by defining `WP_ENVIRONMENT_TYPE` in your `wp-config.php` file. You can define the available environments by using the `wp_environment_switcher_environments` filter:
+The plugin reads the current WordPress environment from the current hosting
+provider (Pantheon and WordPress VIP supported) and falls back to
+`wp_get_environment_type()` which can be set by defining `WP_ENVIRONMENT_TYPE`
+in your `wp-config.php` file. You can override the current environment by
+using the `wp_environment_switcher_current_environment` filter:
+
+```php
+add_filter(
+	'wp_environment_switcher_current_environment',
+	fn () => 'my-custom-environment'
+);
+```
+
+You can define the available environments by using the
+`wp_environment_switcher_environments` filter:
 
 ```php
 add_filter(

@@ -39,6 +39,29 @@ function get_environments(): array {
 }
 
 /**
+ * Retrieve the current environment name.
+ *
+ * Will attempt to infer the environment from the hosting provider and fallback
+ * to the WP_ENVIRONMENT_TYPE constant.
+ *
+ * @return string
+ */
+function get_current_environment(): string {
+	$default = match ( true ) {
+		! empty( $_ENV['PANTHEON_ENVIRONMENT'] ) => (string) $_ENV['PANTHEON_ENVIRONMENT'],
+		defined( 'VIP_GO_APP_ENVIRONMENT' ) => (string) VIP_GO_APP_ENVIRONMENT,
+		default => (string) wp_get_environment_type(),
+	};
+
+	/**
+	 * Filter the current environment name.
+	 *
+	 * @param string $default The current environment.
+	 */
+	return (string) apply_filters( 'wp_environment_switcher_current_environment', $default );
+}
+
+/**
  * Translate the current request path to a different host.
  *
  * Used to translate www.example.org/the/path to staging.example.org/the/path
@@ -65,7 +88,7 @@ function register_admin_bar(): void {
 		return;
 	}
 
-	$current = wp_get_environment_type();
+	$current = get_current_environment();
 
 	// Bail if we can't determine the current environment.
 	if ( empty( $current ) ) {
