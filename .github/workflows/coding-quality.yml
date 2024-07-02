@@ -3,10 +3,8 @@ name: Code Quality
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
-  schedule:
-    - cron: '0 0 * * *'
 
 jobs:
   code-quality:
