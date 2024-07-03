@@ -48,7 +48,9 @@ add_filter(
 ```
 
 The plugin will automatically detect the current environment and highlight it in
-the switcher.
+the switcher. By default, the plugin will show the switcher to anybody with the
+`manage_options` capability. You can change this by modifying the capability
+mapped to the `view_environment_switcher` capability with `map_meta_cap`.
 
 ## Testing
 

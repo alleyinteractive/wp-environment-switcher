@@ -3,7 +3,7 @@
  * Plugin Name: WordPress Environment Switcher
  * Plugin URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Description: Easily switch between different site environments from the WordPress admin bar.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Sean Fisher
  * Author URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Requires at least: 5.5.0
@@ -26,6 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 function main(): void {
 	add_action( 'admin_bar_menu', __NAMESPACE__ . '\\register_admin_bar', 300 );
 	add_action( 'wp_before_admin_bar_render', __NAMESPACE__ . '\\add_switcher_css' );
+	add_filter( 'map_meta_cap', __NAMESPACE__ . '\\map_meta_cap', 10, 2 );
 }
 main();
 
@@ -48,7 +49,7 @@ function get_environments(): array {
  */
 function get_current_environment(): string {
 	$default = match ( true ) {
-		! empty( $_ENV['PANTHEON_ENVIRONMENT'] ) => (string) $_ENV['PANTHEON_ENVIRONMENT'],
+		! empty( $_ENV['PANTHEON_ENVIRONMENT'] ) => (string) $_ENV['PANTHEON_ENVIRONMENT'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		defined( 'VIP_GO_APP_ENVIRONMENT' ) => (string) VIP_GO_APP_ENVIRONMENT,
 		default => (string) wp_get_environment_type(),
 	};
@@ -82,6 +83,11 @@ function get_translated_url( string $environment_url ): string {
  * Register the admin environment switcher in the admin bar.
  */
 function register_admin_bar(): void {
+	// Check if the user has permission to view the switcher.
+	if ( ! current_user_can( 'view_environment_switcher' ) ) {
+		return;
+	}
+
 	$environments = get_environments();
 
 	if ( empty( $environments ) ) {
@@ -193,4 +199,19 @@ function add_switcher_css(): void {
 		?>
 	</style>
 	<?php
+}
+
+/**
+ * Map the meta capability for viewing the environment switcher.
+ *
+ * @param array<string> $caps An array of the user's capabilities.
+ * @param string        $cap The capability being checked.
+ * @return array<string>
+ */
+function map_meta_cap( $caps, $cap ): array {
+	if ( 'view_environment_switcher' === $cap ) {
+		$caps = [ 'manage_options' ];
+	}
+
+	return $caps;
 }
