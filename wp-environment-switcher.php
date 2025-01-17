@@ -83,8 +83,15 @@ function get_translated_url( string $environment_url ): string {
  * Register the admin environment switcher in the admin bar.
  */
 function register_admin_bar(): void {
+	/**
+	 * Filter the ability to show the environment switcher in the admin bar.
+	 *
+	 * @param bool $can_show_menu The current environment.
+	 */
+	$can_show_menu = (bool) apply_filters( 'wp_environment_switcher_can_show_menu', current_user_can( 'view_environment_switcher' ) );
+
 	// Check if the user has permission to view the switcher.
-	if ( ! current_user_can( 'view_environment_switcher' ) ) {
+	if ( ! $can_show_menu ) {
 		return;
 	}
 
