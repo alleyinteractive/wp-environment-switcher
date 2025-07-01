@@ -1,0 +1,11 @@
+<?php
+// Stub script to setup the environment switcher for testing.
+add_filter( 'wp_environment_switcher_current_environment', fn () => 'staging' );
+add_filter(
+	'wp_environment_switcher_environments',
+	fn () => [
+		'production' => 'https://example.org',
+		'staging'    => 'https://localhost:8000',
+		'local'      => 'https://example.test',
+	],
+);
