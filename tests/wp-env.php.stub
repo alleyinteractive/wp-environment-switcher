@@ -3,9 +3,31 @@
 add_filter( 'wp_environment_switcher_current_environment', fn () => 'staging' );
 add_filter(
 	'wp_environment_switcher_environments',
-	fn () => [
-		'production' => 'https://example.org',
-		'staging'    => 'https://localhost:8000',
-		'local'      => 'https://example.test',
-	],
+	function () {
+		if ( ! empty( $_GET['keyvalue'] ) ) {
+			return [
+				'production' => 'https://example.org',
+				'staging'    => 'https://localhost:8000',
+				'local'      => 'https://example.test',
+			];
+		}
+
+		return [
+			[
+				'type'  => 'production',
+				'url'   => 'https://example.org',
+				'label' => 'Production',
+			],
+			[
+				'type'  => 'staging',
+				'url'   => 'https://localhost:8000',
+				'label' => 'Staging',
+			],
+			[
+				'type'  => 'local',
+				'url'   => 'https://example.test',
+				'label' => 'Local',
+			],
+		];
+	},
 );

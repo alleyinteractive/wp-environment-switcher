@@ -47,6 +47,33 @@ add_filter(
 );
 ```
 
+The environments can also be defined as an array of associative arrays, which allows for more flexibility:
+
+```php
+add_filter(
+	'wp_environment_switcher_environments',
+	fn () => [
+		[
+			'type'  => 'production',
+			'url'   => 'https://example.org',
+			'label' => 'Production Site',
+		],
+		[
+			'type'  => 'staging',
+			'url'   => 'https://staging.example.org',
+			'label' => 'Staging Site',
+		],
+		[
+			'type'  => 'local',
+			'url'   => 'https://example.test',
+			'label' => 'Local Development',
+		],
+	]
+);
+```
+
+The `type`, `url`, and `label` keys are required for each environment.
+
 The plugin will automatically detect the current environment and highlight it in
 the switcher. By default, the plugin will show the switcher to anybody with the
 `manage_options` capability. You can change this by modifying the capability
