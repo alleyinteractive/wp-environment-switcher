@@ -12,6 +12,7 @@
 /configure.php export-ignore
 /Makefile export-ignore
 /package.json export-ignore
+/phpstan.neon export-ignore
 /phpunit.xml export-ignore
 /playwright.config.ts export-ignore
 /tests export-ignore
