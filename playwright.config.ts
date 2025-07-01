@@ -34,9 +34,12 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'npm run start',
-    url: 'http://localhost:8888',
+    command: 'npx wp-env start',
+    ignoreHTTPSErrors: true,
     reuseExistingServer: true,
+    stderr: 'pipe',
+    stdout: 'pipe',
     timeout: 60 * 5 * 1000, // 5 minutes
+    url: 'http://localhost:8888',
   },
 });
