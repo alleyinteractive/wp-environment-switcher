@@ -37,5 +37,6 @@ export default defineConfig({
     command: 'npm run start',
     url: 'http://localhost:8888',
     reuseExistingServer: true,
+    timeout: 60 * 5 * 1000, // 5 minutes
   },
 });
