@@ -3,7 +3,7 @@
  * Plugin Name: WordPress Environment Switcher
  * Plugin URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Description: Easily switch between different site environments from the WordPress admin bar.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Sean Fisher
  * Author URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Requires at least: 5.5.0
@@ -33,7 +33,7 @@ main();
 /**
  * Retrieve all the available environments for the switcher.
  *
- * @return array<string, string>
+ * @return array<string, string>|array<array{type?: string, url?: string, label?: string}>
  */
 function get_environments(): array {
 	return (array) apply_filters( 'wp_environment_switcher_environments', [] ); // @phpstan-ignore-line return.type
@@ -109,8 +109,17 @@ function register_admin_bar(): void {
 		return;
 	}
 
+	// Determine if the environments are a key-value pair or an array of
+	// associative arrays. Key-value pairs are of the form of 'environment' => 'url',
+	// while associative arrays are of the form of
+	// [ 'type' => 'environment', 'url' => 'url', 'label' => 'Label' ].
+	$is_key_value = ! array_is_list( $environments );
+
 	// Fire a warning if the current environment is not in the list of environments.
-	if ( ! isset( $environments[ $current ] ) ) {
+	if (
+		( $is_key_value && ! isset( $environments[ $current ] ) )
+		|| ( ! $is_key_value && ! in_array( $current, array_column( $environments, 'type' ), true ) )
+	) {
 		_doing_it_wrong(
 			__FUNCTION__,
 			sprintf(
@@ -159,18 +168,42 @@ function register_admin_bar(): void {
 		$callback = __NAMESPACE__ . '\\get_translated_url';
 	}
 
-	foreach ( $environments as $environment => $url ) {
-		$wp_admin_bar->add_menu(
-			[
-				'id'     => 'wp-environment-switcher-' . $environment,
-				'parent' => 'wp-environment-switcher',
-				'title'  => ucwords( $environment ),
-				'href'   => $callback( $url ),
-				'meta'   => [
-					'class' => 'wp-environment-switcher__item ' . ( $environment === $current ? 'wp-environment-switcher__item--active' : '' ),
-				],
-			]
-		);
+	if ( $is_key_value ) {
+		foreach ( $environments as $environment => $url ) {
+			if ( ! is_string( $url ) ) {
+				continue;
+			}
+
+			$wp_admin_bar->add_menu(
+				[
+					'id'     => 'wp-environment-switcher-' . $environment,
+					'parent' => 'wp-environment-switcher',
+					'title'  => ucwords( $environment ),
+					'href'   => $callback( $url ),
+					'meta'   => [
+						'class' => 'wp-environment-switcher__item ' . ( $environment === $current ? 'wp-environment-switcher__item--active' : '' ),
+					],
+				]
+			);
+		}
+	} else {
+		foreach ( $environments as $environment ) {
+			if ( ! is_array( $environment ) || ! isset( $environment['type'], $environment['url'], $environment['label'] ) ) {
+				continue;
+			}
+
+			$wp_admin_bar->add_menu(
+				[
+					'id'     => 'wp-environment-switcher-' . esc_attr( "{$environment['type']}-{$environment['label']}" ),
+					'parent' => 'wp-environment-switcher',
+					'title'  => $environment['label'],
+					'href'   => $callback( $environment['url'] ),
+					'meta'   => [
+						'class' => 'wp-environment-switcher__item ' . ( $environment['type'] === $current ? 'wp-environment-switcher__item--active' : '' ),
+					],
+				]
+			);
+		}
 	}
 }
 
@@ -195,7 +228,7 @@ function add_switcher_css(): void {
 		 *
 		 * @param bool $warn_production Whether to warn the user when they are on production. Defaults to true when on production.
 		 */
-		if ( apply_filters( 'wp_environment_switcher_warn_production', 'production' === wp_get_environment_type() ) ) {
+		if ( apply_filters( 'wp_environment_switcher_warn_production', 'production' === get_current_environment() ) ) {
 			?>
 				#wpadminbar #wp-admin-bar-wp-environment-switcher:not(.hover) > .ab-item {
 					background: #d63638;
