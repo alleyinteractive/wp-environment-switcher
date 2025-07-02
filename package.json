@@ -6,6 +6,7 @@
     "test": "tests"
   },
   "scripts": {
+    "release": "npx @alleyinteractive/create-release@latest",
     "start": "wp-env start",
     "test": "playwright test"
   },
