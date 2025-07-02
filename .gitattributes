@@ -6,14 +6,16 @@
 # Via WPCS.
 #
 /.github export-ignore
-/.phpcs.xml export-ignore
 /.phpcs export-ignore
-/phpunit.xml export-ignore
-/package.json export-ignore
-/tests export-ignore
+/.phpcs.xml export-ignore
+/.wp-env.json export-ignore
 /configure.php export-ignore
 /Makefile export-ignore
-/.wp-env.json export-ignore
+/package.json export-ignore
+/phpstan.neon export-ignore
+/phpunit.xml export-ignore
+/playwright.config.ts export-ignore
+/tests export-ignore
 
 #
 # Auto detect text files and perform LF normalization.

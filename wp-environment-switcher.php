@@ -36,7 +36,7 @@ main();
  * @return array<string, string>|array<array{type?: string, url?: string, label?: string}>
  */
 function get_environments(): array {
-	return (array) apply_filters( 'wp_environment_switcher_environments', [] );
+	return (array) apply_filters( 'wp_environment_switcher_environments', [] ); // @phpstan-ignore-line return.type
 }
 
 /**
@@ -49,7 +49,9 @@ function get_environments(): array {
  */
 function get_current_environment(): string {
 	$default = match ( true ) {
+		// @phpstan-ignore-next-line cast.string
 		! empty( $_ENV['PANTHEON_ENVIRONMENT'] ) => (string) $_ENV['PANTHEON_ENVIRONMENT'], // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		// @phpstan-ignore-next-line cast.string
 		defined( 'VIP_GO_APP_ENVIRONMENT' ) => (string) VIP_GO_APP_ENVIRONMENT,
 		default => (string) wp_get_environment_type(),
 	};
@@ -76,7 +78,7 @@ function get_translated_url( string $environment_url ): string {
 		return $environment_url;
 	}
 
-	return rtrim( $environment_url, '/' ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
+	return rtrim( $environment_url, '/' ) . sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ); // @phpstan-ignore-line argument.type
 }
 
 /**
@@ -131,6 +133,10 @@ function register_admin_bar(): void {
 
 	global $wp_admin_bar;
 
+	if ( ! $wp_admin_bar instanceof \WP_Admin_Bar ) {
+		return;
+	}
+
 	$wp_admin_bar->add_menu(
 		[
 			'id'     => 'wp-environment-switcher',
@@ -151,7 +157,7 @@ function register_admin_bar(): void {
 	$callback = apply_filters( 'wp_environment_switcher_url_translation', __NAMESPACE__ . '\\get_translated_url' );
 
 	// Fire a warning if the translation callback is not callable.
-	if ( ! is_callable( $callback ) ) {
+	if ( ! is_callable( $callback ) ) { // @phpstan-ignore-line function.alreadyNarrowedType
 		_doing_it_wrong(
 			__FUNCTION__,
 			esc_html__( 'The URL translation callback is not callable.', 'wp-environment-switcher' ),
