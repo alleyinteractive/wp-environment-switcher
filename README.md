@@ -1,6 +1,6 @@
 # WordPress Environment Switcher
 
-[![Coding Standards](https://github.com/alleyinteractive/wp-environment-switcher/actions/workflows/coding-standards.yml/badge.svg)](https://github.com/alleyinteractive/wp-environment-switcher/actions/workflows/coding-standards.yml)
+[![Playwright Tests](https://github.com/alleyinteractive/wp-environment-switcher/actions/workflows/playwright.yml/badge.svg)](https://github.com/alleyinteractive/wp-environment-switcher/actions/workflows/playwright.yml)
 
 Easily switch between different site environments from the WordPress admin bar.
 
