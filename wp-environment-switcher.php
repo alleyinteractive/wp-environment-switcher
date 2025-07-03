@@ -16,6 +16,8 @@
 
 namespace Alley\WP\WordPress_Environment_Switcher;
 
+use WP_Admin_Bar;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -33,10 +35,30 @@ main();
 /**
  * Retrieve all the available environments for the switcher.
  *
- * @return array<string, string>|array<array{type?: string, url?: string, label?: string}>
+ * @return list<array{type?: string, url?: string, label?: string}>
  */
 function get_environments(): array {
-	return (array) apply_filters( 'wp_environment_switcher_environments', [] ); // @phpstan-ignore-line return.type
+	$environments = (array) apply_filters( 'wp_environment_switcher_environments', [] );
+
+	// Determine if the environments are a key-value pair or an array of
+	// associative arrays. Key-value pairs are of the form of 'environment' => 'url',
+	// while associative arrays are of the form of
+	// [ 'type' => 'environment', 'url' => 'url', 'label' => 'Label' ].
+	$is_key_value = ! array_is_list( $environments );
+
+	// Shape key-value pairs into associative arrays for easier handling afterwards.
+	if ( $is_key_value ) {
+		// @phpstan-ignore argument.type
+		$environments = array_map( static function ( string $type, string $url ): array {
+			return [
+				'type'  => $type,
+				'url'   => $url,
+				'label' => ucwords( $type ),
+			];
+		}, array_keys( $environments ), $environments );
+	}
+
+	return $environments; // @phpstan-ignore return.type
 }
 
 /**
@@ -83,8 +105,10 @@ function get_translated_url( string $environment_url ): string {
 
 /**
  * Register the admin environment switcher in the admin bar.
+ *
+ * @param WP_Admin_Bar $wp_admin_bar The admin bar instance.
  */
-function register_admin_bar(): void {
+function register_admin_bar( WP_Admin_Bar $wp_admin_bar ): void {
 	// Check if the user has permission to view the switcher.
 	if ( ! current_user_can( 'view_environment_switcher' ) ) {
 		return;
@@ -96,10 +120,10 @@ function register_admin_bar(): void {
 		return;
 	}
 
-	$current = get_current_environment();
+	$current_type = get_current_environment();
 
 	// Bail if we can't determine the current environment.
-	if ( empty( $current ) ) {
+	if ( empty( $current_type ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
 			esc_html__( 'The current environment could not be determined.', 'wp-environment-switcher' ),
@@ -109,38 +133,30 @@ function register_admin_bar(): void {
 		return;
 	}
 
-	// Determine if the environments are a key-value pair or an array of
-	// associative arrays. Key-value pairs are of the form of 'environment' => 'url',
-	// while associative arrays are of the form of
-	// [ 'type' => 'environment', 'url' => 'url', 'label' => 'Label' ].
-	$is_key_value = ! array_is_list( $environments );
-
 	// Fire a warning if the current environment is not in the list of environments.
-	if (
-		( $is_key_value && ! isset( $environments[ $current ] ) )
-		|| ( ! $is_key_value && ! in_array( $current, array_column( $environments, 'type' ), true ) )
-	) {
+	if ( ! in_array( $current_type, array_column( $environments, 'type' ), true ) ) {
 		_doing_it_wrong(
 			__FUNCTION__,
 			sprintf(
 				/* translators: %s is the current environment */
 				esc_html__( 'The current environment (%s) is not in the list of environments.', 'wp-environment-switcher' ),
-				esc_html( $current )
+				esc_html( $current_type )
 			),
 			'0.1.0'
 		);
 	}
 
-	global $wp_admin_bar;
-
-	if ( ! $wp_admin_bar instanceof \WP_Admin_Bar ) {
-		return;
-	}
+	$current_environment = array_values( array_filter(
+		$environments,
+		static function ( array $environment ) use ( $current_type ): bool {
+			return ( $environment['type'] ?? null ) === $current_type;
+		}
+	) ) [0];
 
 	$wp_admin_bar->add_menu(
 		[
 			'id'     => 'wp-environment-switcher',
-			'title'  => ucwords( $current ),
+			'title'  => $current_environment['label'] ?? ucwords( $current_type ),
 			'href'   => '#',
 			'parent' => 'top-secondary',
 			'meta'   => [
@@ -168,42 +184,30 @@ function register_admin_bar(): void {
 		$callback = __NAMESPACE__ . '\\get_translated_url';
 	}
 
-	if ( $is_key_value ) {
-		foreach ( $environments as $environment => $url ) {
-			if ( ! is_string( $url ) ) {
-				continue;
-			}
-
-			$wp_admin_bar->add_menu(
-				[
-					'id'     => 'wp-environment-switcher-' . $environment,
-					'parent' => 'wp-environment-switcher',
-					'title'  => ucwords( $environment ),
-					'href'   => $callback( $url ),
-					'meta'   => [
-						'class' => 'wp-environment-switcher__item ' . ( $environment === $current ? 'wp-environment-switcher__item--active' : '' ),
-					],
-				]
-			);
+	foreach ( $environments as $environment ) {
+		if ( ! isset( $environment['type'], $environment['url'], $environment['label'] ) ) {
+			continue;
 		}
-	} else {
-		foreach ( $environments as $environment ) {
-			if ( ! is_array( $environment ) || ! isset( $environment['type'], $environment['url'], $environment['label'] ) ) {
-				continue;
-			}
 
-			$wp_admin_bar->add_menu(
-				[
-					'id'     => 'wp-environment-switcher-' . esc_attr( "{$environment['type']}-{$environment['label']}" ),
-					'parent' => 'wp-environment-switcher',
-					'title'  => $environment['label'],
-					'href'   => $callback( $environment['url'] ),
-					'meta'   => [
-						'class' => 'wp-environment-switcher__item ' . ( $environment['type'] === $current ? 'wp-environment-switcher__item--active' : '' ),
-					],
-				]
-			);
-		}
+		$environment_slug = sanitize_title_with_dashes( $environment['label'] );
+
+		$wp_admin_bar->add_menu(
+			[
+				'id'     => 'wp-environment-switcher-' . esc_attr( "{$environment['type']}-{$environment_slug}" ),
+				'parent' => 'wp-environment-switcher',
+				'title'  => $environment['label'],
+				'href'   => $callback( $environment['url'] ),
+				'meta'   => [
+					'class'  => implode( ' ', array_unique( array_filter( [
+						'wp-environment-switcher__item',
+						'wp-environment-switcher__item--' . esc_attr( $environment_slug ),
+						'wp-environment-switcher__item--' . esc_attr( $environment['type'] ),
+						$environment['type'] === $current_type ? 'wp-environment-switcher__item--active' : null,
+					] ) ) ),
+					'target' => '_blank',
+				],
+			]
+		);
 	}
 }
 
