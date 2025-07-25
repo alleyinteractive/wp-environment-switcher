@@ -3,7 +3,7 @@
  * Plugin Name: WordPress Environment Switcher
  * Plugin URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Description: Easily switch between different site environments from the WordPress admin bar.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Sean Fisher
  * Author URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Requires at least: 5.5.0

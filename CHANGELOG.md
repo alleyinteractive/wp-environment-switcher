@@ -2,6 +2,10 @@
 
 All notable changes to `WordPress Environment Switcher` will be documented in this file.
 
+## 1.2.1
+
+- Refactor environment detection logic to allow for proper targeting.
+
 ## 1.2.0
 
 - Added support for more flexible environment configurations.

@@ -35,6 +35,7 @@
         "phpcbf": "phpcbf .",
         "phpcs": "phpcs .",
         "phpstan": "phpstan --memory-limit=512M",
+        "release": "npx @alleyinteractive/create-release@latest",
         "test": [
             "@phpcs",
             "@phpstan"
