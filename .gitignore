@@ -1,7 +1,6 @@
 # Build files
 build
 vendor
-composer.lock
 node_modules
 
 # Log files

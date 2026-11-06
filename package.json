@@ -12,8 +12,12 @@
   },
   "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.53.2",
-    "@types/node": "^24.0.9",
-    "@wordpress/e2e-test-utils-playwright": "^1.26.0"
+    "@playwright/test": "^1.65.0",
+    "@types/node": "^26.6.6",
+    "@wordpress/e2e-test-utils-playwright": "^3.2.0"
+  },
+  "engines": {
+    "node": "26",
+    "npm": "11"
   }
 }

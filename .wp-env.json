@@ -1,9 +1,12 @@
 {
   "$schema": "https://schemas.wp.org/trunk/wp-env.json",
   "core": null,
-  "lifecycleScripts": {
-    "afterClean": "./tests/after-setup.sh",
-    "afterStart": "./tests/after-setup.sh"
-  },
-  "plugins": ["."]
+  "plugins": [
+    "."
+  ],
+  "phpVersion": "8.4",
+  "testsEnvironment": false,
+  "mappings": {
+    "wp-content/mu-plugins/wp-env.php": "./tests/wp-env.php.stub"
+  }
 }
