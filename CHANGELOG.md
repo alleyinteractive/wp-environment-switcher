@@ -2,6 +2,10 @@
 
 All notable changes to `WordPress Environment Switcher` will be documented in this file.
 
+## Unreleased
+
+- Require PHP 8.4 and test against WordPress 7.1.
+
 ## 1.2.1
 
 - Refactor environment detection logic to allow for proper targeting.
