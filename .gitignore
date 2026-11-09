@@ -30,5 +30,3 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 
-# NPM files (this isn't a front-end package that we release)
-package-lock.json

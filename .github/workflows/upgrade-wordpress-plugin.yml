@@ -16,5 +16,5 @@ jobs:
     - uses: alleyinteractive/action-update-wordpress-plugin@v2
       with:
         plugin-file: 'wp-environment-switcher.php'
-        # The upgrade step runs `npm ci` and `wp-scripts packages-update`; this repo has neither a lockfile nor wp-scripts.
+        # The upgrade step runs `npm ci` and `wp-scripts packages-update`; this repo has no wp-scripts.
         upgrade-npm-dependencies: "false"
