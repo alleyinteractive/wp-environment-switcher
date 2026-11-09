@@ -8,7 +8,7 @@ Nothing yet.
 
 ## 1.3.0
 
-- Require PHP 8.4 and test against WordPress 7.1.
+- Require PHP 8.3 and test against WordPress 7.1.
 
 ## 1.2.1
 

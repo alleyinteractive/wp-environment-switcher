@@ -8,7 +8,7 @@
  * Author URI: https://github.com/alleyinteractive/wp-environment-switcher
  * Requires at least: 5.5.0
  * Tested up to: 7.1
- * Requires PHP: 8.4
+ * Requires PHP: 8.3
  *
  * Text Domain: wp-environment-switcher
  *
