@@ -15,11 +15,11 @@
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.3"
     },
     "require-dev": {
-        "alleyinteractive/alley-coding-standards": "^2.0",
-        "szepeviktor/phpstan-wordpress": "^2.0"
+        "alleyinteractive/alley-coding-standards": "^2.6",
+        "szepeviktor/phpstan-wordpress": "^2.0.4"
     },
     "config": {
         "allow-plugins": {
@@ -35,10 +35,16 @@
         "phpcbf": "phpcbf .",
         "phpcs": "phpcs .",
         "phpstan": "phpstan --memory-limit=512M",
-        "release": "npx @alleyinteractive/create-release@latest",
-        "test": [
+        "lint": [
             "@phpcs",
             "@phpstan"
+        ],
+        "lint:fix": [
+            "@phpcbf"
+        ],
+        "release": "npx @alleyinteractive/create-release@latest",
+        "test": [
+            "@lint"
         ]
     }
 }

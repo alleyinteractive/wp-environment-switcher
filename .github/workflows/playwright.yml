@@ -9,12 +9,15 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v5
+    - uses: actions/checkout@v7
+    - name: Install dependencies
+      # See https://github.com/alleyinteractive/action-test-node for more options
+      uses: alleyinteractive/action-test-node@v1
       with:
-        node-version: lts/*
-    - name: Install dependencies and build
-      run: npm install && npm run build
+        node-version: 26
+        # Playwright needs wp-env running, so the tests run in their own step below.
+        skip-test: 'true'
+        skip-build: 'true'
     - name: Install Playwright Browsers
       run: npx playwright install chromium --with-deps
     - name: Install and start wp-env
@@ -29,7 +32,7 @@ jobs:
         done
     - name: Run Playwright tests
       run: npx playwright test
-    - uses: actions/upload-artifact@v6
+    - uses: actions/upload-artifact@v7
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
